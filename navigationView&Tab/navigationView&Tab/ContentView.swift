@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var show = true
+    @State var show = false
     @State private var selection: String? = nil
     var body: some View {
         
@@ -55,8 +55,32 @@ struct ContentView: View {
 struct StartTabView: View {
     var body: some View {
         NavigationView {
-            Text("断食を始める")
+            VStack {
+                HStack {
+                    Button(action: {}) {
+                        Text("プチ断食を始める").foregroundColor(.white)
+                        .frame(width: 160, height: 240).background(AnimationButton())
+                        .cornerRadius(10)
+                        .padding(.bottom, 20)
+                    }
+                        
+                    Button(action: {}) {
+                        Text("長期断食を始める").foregroundColor(.white)
+                        .frame(width: 160, height: 240).background(AnimationButton())
+                        .cornerRadius(10)
+                        .padding(.bottom, 20)
+                    }
+                        
+                }
+                    .padding()
+                    .frame(maxHeight: 300)
+            }
                 .navigationBarTitle("スタート", displayMode: .inline)
+                .navigationBarItems(
+                    //leading: Image(systemName: ""),
+                    trailing: Image(systemName: "ellipsis")
+                        .rotationEffect(.degrees(90))
+                )
         }
     }
 }
@@ -80,7 +104,7 @@ struct LearnTabView: View {
     var body: some View {
         NavigationView {
             Text("断食について学ぶ")
-                .navigationBarTitle("学び", displayMode: .inline)
+                .navigationBarTitle("学ぶ", displayMode: .inline)
         }
     }
 }
@@ -95,19 +119,42 @@ struct Menu : View {
         VStack(alignment: .leading, spacing: 15) {
             
             Button(action: {
-                
+                // TODO:
             }) {
-                
                 HStack(spacing: 12){
                     Text("ようこそ").font(.system(size: 30)).foregroundColor(.black)
                 }.padding(50)
             }
-            
-            
-            
         }.padding()
         .background(Color.white)
         .cornerRadius(15)
     }
 }
 
+struct AnimationButton: View {
+    let timer = Timer.publish(every: 1, on: .main, in: . default).autoconnect()
+    let colors = [
+        Color.green,
+        Color.green,
+        Color.blue,
+        Color.purple,
+        Color.pink,
+        Color.red,
+        Color.orange
+    ]
+
+    @State private var start = UnitPoint(x: 0, y: -2)
+    @State private var end = UnitPoint(x: 4, y: 0)
+
+    var body: some View {
+        LinearGradient(gradient: Gradient(colors: colors), startPoint: start, endPoint: end )
+            .animation(Animation.easeInOut(duration: 6).repeatForever())
+            .onReceive(timer) { _ in
+                self.start = UnitPoint(x: 4, y: 0)
+                self.end = UnitPoint(x: 0, y: 2)
+                self.start = UnitPoint(x: -4, y: 20)
+                self.end = UnitPoint(x: 4, y: 0)
+            }
+
+    }
+}
